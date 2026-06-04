@@ -1,0 +1,10 @@
+# Terraform
+infra/.terraform/
+infra/terraform.tfstate
+infra/terraform.tfstate.backup
+
+# App
+app.zip
+__pycache__/
+*.pyc
+.env
