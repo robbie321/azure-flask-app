@@ -44,4 +44,31 @@ resource "azurerm_linux_web_app" "app" {
       python_version = "3.11"
     }
   }
+
+  app_settings = {
+    "DB_HOST" = azurerm_postgresql_flexible_server.db.fqdn
+    "DB_NAME" = "flaskappdb"
+    "DB_USER" = "flaskadmin"
+    "DB_PASS" = var.db_password
+  }
+}
+
+resource "azurerm_postgresql_flexible_server" "db" {
+  name                   = "flask-db-robbie321"
+  resource_group_name    = azurerm_resource_group.rg.name
+  location               = azurerm_resource_group.rg.location
+  version                = "16"
+  administrator_login    = "flaskadmin"
+  administrator_password = var.db_password
+  storage_mb             = 32768
+  sku_name               = "B_Standard_B1ms"
+  backup_retention_days  = 7
+  zone                   = "1"
+}
+
+resource "azurerm_postgresql_flexible_server_database" "appdb" {
+  name      = "flaskappdb"
+  server_id = azurerm_postgresql_flexible_server.db.id
+  collation = "en_US.utf8"
+  charset   = "utf8"
 }
